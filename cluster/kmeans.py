@@ -30,8 +30,11 @@ class KMeans:
         self.tol = tol
         self.max_iter = max_iter
         self.centroids = None
-
-    # using k++ to initialize farthest points from each other as initial centroids
+        if self.k == 0:
+            raise ValueError("k cannot be 0. Please specify number of clusters to be greater than 0.") 
+        
+    """
+    # using k++ to initialize farthest points from each other as initial centroids (attempted but doesn't work)
     def _set_initial_centroids(self, mat: np.ndarray):
         centroid = np.array([mat[random.randint(0, len(mat) - 1)]])
         i = 1
@@ -41,7 +44,8 @@ class KMeans:
             centroid = np.append(centroid, next_centroid).reshape(i + 1, 2)
             i += 1
         self.centroids = centroid
-    
+    """
+
     def fit(self, mat: np.ndarray):
         """
         Fits the kmeans algorithm onto a provided 2D matrix.
@@ -58,6 +62,8 @@ class KMeans:
                 A 2D matrix where the rows are observations and columns are features
         """
         # self._set_initial_centroids(mat)
+        if (self.k >= len(mat) / 2):
+            print("Warning - you may want to choose a lower number of clusters.")
         self.centroids = mat[np.random.choice(mat.shape[0], self.k, replace=False)]
         for i in range(0, self.max_iter):
             centroid_distances = cdist(mat, self.centroids, 'euclidean')
@@ -87,7 +93,6 @@ class KMeans:
             np.ndarray
                 a 1D array with the cluster label for each of the observations in `mat`
         """
-
         centroid_distances = cdist(mat, self.centroids, 'euclidean')
         self.cluster_ids = np.argmin(centroid_distances, axis=1)
         self.mat = mat

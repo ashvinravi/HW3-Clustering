@@ -9,9 +9,16 @@ import unittest
 import pytest
 import numpy as np
 
+# Ensure that K-Means will throw error if k is greater than or equal to number of observations. 
+def test_kmeans_high_k():
+    with pytest.raises(ValueError):
+        k = kmeans.KMeans(k=0)
+        k.fit()
 def test_kmeans_0():
     with pytest.raises(ValueError):
         k = kmeans.KMeans(k=0)
+        decoy = utils.make_clusters(n=10, k=10)
+        k.fit(decoy[0])
 
 # If k=1, all of your labels should be in the same cluster. 
 def test_kmeans_1():

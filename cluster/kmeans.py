@@ -9,7 +9,7 @@ from sklearn.metrics import silhouette_samples
 # What is the variance threshold you should set? 
 
 class KMeans:
-    def __init__(self, k: int, tol: float = 1e-6, max_iter: int = 100, random: int = 50):
+    def __init__(self, k: int, tol: float = 1e-6, max_iter: int = 100, random_seed: int = 50):
         """
         In this method you should initialize whatever attributes will be required for the class.
 
@@ -30,7 +30,8 @@ class KMeans:
         self.tol = tol
         self.max_iter = max_iter
         self.centroids = None
-        random.seed(self.random)
+        self.random_seed = random_seed
+        random.seed(self.random_seed)
         if self.k == 0:
             raise ValueError("k cannot be 0. Please specify number of clusters to be greater than 0.") 
         
@@ -62,9 +63,17 @@ class KMeans:
             mat: np.ndarray
                 A 2D matrix where the rows are observations and columns are features
         """
+
+        # Optional if k++ implementation was working :/ 
         # self._set_initial_centroids(mat)
+
+        # Tests 
+        if (self.k >= len(mat)):
+            raise ValueError("Overclustering your data! You cannot have your number of clusters be greater than or equal to the number of datapoints.")
         if (self.k >= len(mat) / 2):
             print("Warning - you may want to choose a lower number of clusters.")
+        
+        # Choose centroids randomly based on existing points - replace=F ensures the same point is not picked. 
         self.centroids = mat[np.random.choice(mat.shape[0], self.k, replace=False)]
         for i in range(0, self.max_iter):
             centroid_distances = cdist(mat, self.centroids, 'euclidean')

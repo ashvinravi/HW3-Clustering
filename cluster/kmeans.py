@@ -9,7 +9,7 @@ from sklearn.metrics import silhouette_samples
 # What is the variance threshold you should set? 
 
 class KMeans:
-    def __init__(self, k: int, tol: float = 1e-6, max_iter: int = 100):
+    def __init__(self, k: int, tol: float = 1e-6, max_iter: int = 100, random: int = 50):
         """
         In this method you should initialize whatever attributes will be required for the class.
 
@@ -30,6 +30,7 @@ class KMeans:
         self.tol = tol
         self.max_iter = max_iter
         self.centroids = None
+        random.seed(self.random)
         if self.k == 0:
             raise ValueError("k cannot be 0. Please specify number of clusters to be greater than 0.") 
         
